@@ -5,3 +5,6 @@ test: tests.o main.o
 
 run_tests: test
 	./test
+
+deps:
+	mkdep ${CXXFLAGS} *.cpp
