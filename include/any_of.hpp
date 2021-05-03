@@ -35,6 +35,12 @@ struct Values<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 	}
 };
 
+template <typename T, typename Idx, typename ...Ts>
+bool operator==(T&& value, Values<Idx, Ts...>&& values)
+{
+	return values == value;
+}
+
 template <typename ...Ts>
 auto any_of(Ts&&... vals)
 {
