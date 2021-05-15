@@ -1,5 +1,8 @@
 #include <utility>
 
+namespace srp
+{
+
 template <typename T, typename ...Ts>
 bool equals_to_any_of(T&& val, Ts&&... vals)
 {
@@ -45,4 +48,6 @@ template <typename ...Ts>
 auto any_of(Ts&&... vals)
 {
 	return Values<std::index_sequence_for<Ts...>, Ts...> (std::forward<Ts>(vals)...);
+}
+
 }
