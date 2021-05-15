@@ -1,3 +1,5 @@
+#include <string>
+
 #include <catch2/catch.hpp>
 #include <any_of.hpp>
 
