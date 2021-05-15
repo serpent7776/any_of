@@ -1,15 +1,20 @@
+#include <string>
+
 #include <benchmark/benchmark.h>
+
 #include <any_of.hpp>
 
-static void anyof_f(benchmark::State& state) {
+/* 4 ints test */
+
+static void anyof_4int(benchmark::State& state) {
 	for (auto _ : state) {
 		const bool r = state.range(0) == srp::any_of(10, 11, 12, 13);
 		benchmark::DoNotOptimize(r);
 	}
 }
-BENCHMARK(anyof_f)->Arg(12);
+BENCHMARK(anyof_4int)->Arg(12);
 
-static void plain_f(benchmark::State& state) {
+static void plain_4int(benchmark::State& state) {
 	for (auto _ : state) {
 		const bool r = state.range(0) == 10 ||
 			state.range(0) == 11 ||
@@ -18,6 +23,30 @@ static void plain_f(benchmark::State& state) {
 		benchmark::DoNotOptimize(r);
 	}
 }
-BENCHMARK(plain_f)->Arg(12);
+BENCHMARK(plain_4int)->Arg(12);
+
+/* 3 strings test */
+
+static void anyof_3strings(benchmark::State& state) {
+	const std::string s = std::to_string(state.range(0));
+	for (auto _ : state) {
+		const bool r = s == srp::any_of(std::string("1"), std::string("2"), std::string("3"));
+		benchmark::DoNotOptimize(r);
+	}
+}
+BENCHMARK(anyof_3strings)->Arg(0);
+
+static void plain_3strings(benchmark::State& state) {
+	const std::string s = std::to_string(state.range(0));
+	for (auto _ : state) {
+		const bool r = s == std::string("1") ||
+			s == std::string("2") ||
+			s == std::string("3");
+		benchmark::DoNotOptimize(r);
+	}
+}
+BENCHMARK(plain_3strings)->Arg(0);
+
+/* main */
 
 BENCHMARK_MAIN();
