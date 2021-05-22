@@ -13,13 +13,13 @@ template <size_t, typename T>
 class Value
 {
 public:
-	Value(T&& value) : value {std::forward<T>(value)}
+	Value(const T& value) : value {value}
 	{}
 
 	const T& get() const { return value; }
 
 private:
-	T value;
+	const T& value;
 };
 
 template <class Idxs, class ...Ts>
@@ -28,7 +28,7 @@ struct Values;
 template <size_t ...Idxs, typename ...Ts>
 struct Values<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 {
-	Values(Ts&&... vs) : Value<Idxs, Ts>(std::forward<Ts>(vs))...
+	Values(const Ts&... vs) : Value<Idxs, Ts>(vs)...
 	{}
 
 	template <typename T>
@@ -45,9 +45,9 @@ bool operator==(const T& value, const Values<Idx, Ts...>& values)
 }
 
 template <typename ...Ts>
-auto any_of(Ts&&... vals)
+auto any_of(const Ts&... vals)
 {
-	return Values<std::index_sequence_for<Ts...>, Ts...> (std::forward<Ts>(vals)...);
+	return Values<std::index_sequence_for<Ts...>, Ts...> (vals...);
 }
 
 }
