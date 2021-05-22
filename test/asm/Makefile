@@ -5,14 +5,11 @@ DIFFFLAGS=-u --ignore-matching-lines '\s*\.file\s*'
 .PHONY: all
 all: asm_4int asm_1string
 
-.PHONY: asm_4int
-asm_4int:
-	${CXX} ${CXXFLAGS} ${ASMFLAGS} plain_4int.cpp
-	${CXX} ${CXXFLAGS} ${ASMFLAGS} anyof_4int.cpp
-	diff ${DIFFFLAGS} plain_4int.s anyof_4int.s
+asm_%: plain_%.s anyof_%.s
+	diff ${DIFFFLAGS} $^
 
-.PHONY: asm_1string
-asm_1string:
-	${CXX} ${CXXFLAGS} ${ASMFLAGS} plain_1string.cpp
-	${CXX} ${CXXFLAGS} ${ASMFLAGS} anyof_1string.cpp
-	diff ${DIFFFLAGS} plain_1string.s anyof_1string.s
+plain_%.s: plain_%.cpp
+	${CXX} ${CXXFLAGS} ${ASMFLAGS} $<
+
+anyof_%.s: anyof_%.cpp
+	${CXX} ${CXXFLAGS} ${ASMFLAGS} $<
