@@ -5,6 +5,11 @@ DIFFFLAGS=-u --ignore-matching-lines '\s*\.file\s*'
 .PHONY: all
 all: asm_4int asm_1string
 
+.PHONY: clean
+clean:
+	rm -f *.s
+
+.PHONY: asm_%
 asm_%: plain_%.s anyof_%.s
 	diff ${DIFFFLAGS} $^
 

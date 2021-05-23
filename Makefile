@@ -1,3 +1,10 @@
+
+.PHONY: clean
+clean:
+	${MAKE} -C test clean
+	${MAKE} -C test/bench clean
+	${MAKE} -C test/asm clean
+
 .PHONY: test
 test:
 	${MAKE} -C test run_tests
