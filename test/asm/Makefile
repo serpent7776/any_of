@@ -3,7 +3,7 @@ ASMFLAGS=-S -mllvm --x86-asm-syntax=intel
 DIFFFLAGS=-u --ignore-matching-lines '\s*\.file\s*'
 
 .PHONY: all
-all: asm_4int asm_1string
+all: asm_4int asm_1string asm_3strings
 
 .PHONY: clean
 clean:
