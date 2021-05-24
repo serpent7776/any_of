@@ -74,11 +74,3 @@ TEST_CASE("== any_of for strings")
 	const bool result = "foo" == srp::any_of("foo", "bar", "baz");
 	REQUIRE(result);
 }
-
-TEST_CASE("any_of as lvalue")
-{
-	const auto value = std::string("foo");
-	const auto values = srp::any_of(std::string("foo"), std::string("bar"), std::string("baz"));
-	REQUIRE(values == value);
-	REQUIRE(value == values);
-}
