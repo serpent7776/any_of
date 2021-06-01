@@ -1,5 +1,5 @@
 CXXFLAGS=-std=c++17 -O2 -Wall -Wextra -pedantic -pipe -I../../include -I/usr/local/include
-ASMFLAGS=-S -mllvm --x86-asm-syntax=intel
+ASMFLAGS=-S -masm=intel
 DIFFFLAGS=-u --ignore-matching-lines '\s*\.file\s*'
 
 .PHONY: all
