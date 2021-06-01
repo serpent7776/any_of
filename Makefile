@@ -1,3 +1,11 @@
+.PHONY: help
+help:
+	@echo available targets:
+	@echo "clean  clean build files"
+	@echo "test   run unit tests"
+	@echo "bench  run benchmark tests"
+	@echo "asm    run asm generation tests"
+	@echo "deps   generate deps files"
 
 .PHONY: clean
 clean:
