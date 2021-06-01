@@ -9,7 +9,7 @@ bool equals_to_any_of(T&& val, Ts&&... vals)
 	return ((val == vals) || ...);
 }
 
-template <size_t, typename T>
+template <std::size_t, typename T>
 class Value
 {
 public:
@@ -31,7 +31,7 @@ private:
 template <class Idxs, class ...Ts>
 struct Values;
 
-template <size_t ...Idxs, typename ...Ts>
+template <std::size_t ...Idxs, typename ...Ts>
 struct Values<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 {
 	Values() = delete;
