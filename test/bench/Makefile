@@ -6,7 +6,7 @@ clean:
 	rm -f *.o simple_bench
 
 bench: simple_bench.o
-	${CXX} ${LDFLAGS} -o simple_bench simple_bench.o
+	${CXX} -o simple_bench simple_bench.o ${LDFLAGS}
 
 run_bench: bench
 	./simple_bench
