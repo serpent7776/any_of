@@ -44,17 +44,17 @@ struct Values<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 	Values& operator=(Values&&) = delete;
 
 	template <typename T>
-	bool __attribute__((always_inline)) operator==(const T& value) const
+	friend bool __attribute__((always_inline)) operator==(const Values& values, const T& value)
 	{
-		return ((value == Value<Idxs, Ts>::get()) || ...);
+		return ((value == values.Value<Idxs, T>::get()) || ...);
+	}
+
+	template <typename T>
+	friend bool __attribute__((always_inline)) operator==(const T& value, const Values& values)
+	{
+		return values == value;
 	}
 };
-
-template <typename T, typename Idx, typename ...Ts>
-bool __attribute__((always_inline)) operator==(const T& value, const Values<Idx, Ts...>& values)
-{
-	return values == value;
-}
 
 template <typename ...Ts>
 auto any_of(const Ts&... vals)
