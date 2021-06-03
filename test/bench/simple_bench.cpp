@@ -7,19 +7,21 @@
 /* 4 ints test */
 
 static void anyof_4int(benchmark::State& state) {
+	const int value = state.range(0);
 	for (auto _ : state) {
-		const bool r = state.range(0) == srp::any_of(10, 11, 12, 13);
+		const bool r = value == srp::any_of(10, 11, 12, 13);
 		benchmark::DoNotOptimize(r);
 	}
 }
 BENCHMARK(anyof_4int)->Arg(12);
 
 static void plain_4int(benchmark::State& state) {
+	const int value = state.range(0);
 	for (auto _ : state) {
-		const bool r = state.range(0) == 10 ||
-			state.range(0) == 11 ||
-			state.range(0) == 12 ||
-			state.range(0) == 13;
+		const bool r = value == 10 ||
+			value == 11 ||
+			value == 12 ||
+			value == 13;
 		benchmark::DoNotOptimize(r);
 	}
 }
