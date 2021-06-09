@@ -10,21 +10,8 @@ bool equals_to_any_of(T&& val, Ts&&... vals)
 }
 
 template <std::size_t, typename T>
-class Value
+struct Value
 {
-public:
-	Value() = delete;
-	Value(const Value&) = delete;
-	Value(Value&&) = delete;
-	Value(const T& value) : value {value}
-	{}
-
-	Value& operator=(const Value&) = delete;
-	Value& operator=(Value&&) = delete;
-
-	const T& get() const { return value; }
-
-private:
 	const T& value;
 };
 
@@ -34,19 +21,10 @@ struct Values;
 template <std::size_t ...Idxs, typename ...Ts>
 struct Values<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 {
-	Values() = delete;
-	Values(const Values&) = delete;
-	Values(Values&&) = delete;
-	Values(const Ts&... vs) : Value<Idxs, Ts>(vs)...
-	{}
-
-	Values& operator=(const Values&) = delete;
-	Values& operator=(Values&&) = delete;
-
 	template <typename T>
 	friend bool __attribute__((always_inline)) operator==(const Values& values, const T& value)
 	{
-		return ((value == values.Value<Idxs, T>::get()) || ...);
+		return ((value == values.Value<Idxs, T>::value) || ...);
 	}
 
 	template <typename T>
@@ -59,7 +37,7 @@ struct Values<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 template <typename ...Ts>
 auto any_of(const Ts&... vals)
 {
-	return Values<std::index_sequence_for<Ts...>, Ts...> (vals...);
+	return Values<std::index_sequence_for<Ts...>, Ts...> {{vals}...};
 }
 
 }

@@ -1,7 +1,11 @@
 #include <string>
+#include <type_traits>
 
 #include <catch2/catch.hpp>
 #include <any_of.hpp>
+
+static_assert(std::is_aggregate_v<decltype(srp::any_of(12))>);
+static_assert(std::is_aggregate_v<srp::Value<0, int>>);
 
 TEST_CASE("equals_to_any_of finds first value")
 {
