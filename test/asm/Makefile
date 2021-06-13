@@ -21,3 +21,6 @@ view_%: plain_%.s anyof_%.s
 
 .cpp.s:
 	${CXX} ${CXXFLAGS} ${ASMFLAGS} $<
+
+deps:
+	mkdep ${CXXFLAGS} *.cpp

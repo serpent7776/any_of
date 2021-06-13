@@ -27,4 +27,3 @@ asm:
 
 deps:
 	${MAKE} -C test deps
-	${MAKE} -C test/bench deps
