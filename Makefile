@@ -15,7 +15,7 @@ clean:
 
 .PHONY: test
 test:
-	${MAKE} -C test run_tests
+	${MAKE} -C test/unit run_tests
 
 .PHONY: bench
 bench:
