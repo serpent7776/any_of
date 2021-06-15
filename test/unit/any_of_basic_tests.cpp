@@ -13,6 +13,12 @@ TEST_CASE("any_of == finds first value")
 	REQUIRE(result);
 }
 
+TEST_CASE("any_of == finds middle value")
+{
+	const bool result = srp::any_of(1, 2, 3) == 2;
+	REQUIRE(result);
+}
+
 TEST_CASE("any_of == finds last value")
 {
 	const bool result = srp::any_of(1, 2, 3) == 3;
@@ -34,6 +40,12 @@ TEST_CASE("any_of == for strings")
 TEST_CASE("== any_of finds first value")
 {
 	const bool result = 1 == srp::any_of(1, 2, 3);
+	REQUIRE(result);
+}
+
+TEST_CASE("== any_of finds middle value")
+{
+	const bool result = 2 == srp::any_of(1, 2, 3);
 	REQUIRE(result);
 }
 
