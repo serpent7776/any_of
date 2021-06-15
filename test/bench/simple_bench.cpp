@@ -27,18 +27,18 @@ static void plain_4int(benchmark::State& state) {
 }
 BENCHMARK(plain_4int)->Arg(12);
 
-/* 3 strings test */
+/* 3 small strings test */
 
-static void anyof_3strings(benchmark::State& state) {
+static void anyof_3strings_small(benchmark::State& state) {
 	const std::string s = std::to_string(state.range(0));
 	for (auto _ : state) {
 		const bool r = s == srp::any_of(std::string("1"), std::string("2"), std::string("3"));
 		benchmark::DoNotOptimize(r);
 	}
 }
-BENCHMARK(anyof_3strings)->Arg(0);
+BENCHMARK(anyof_3strings_small)->Arg(0);
 
-static void plain_3strings(benchmark::State& state) {
+static void plain_3strings_small(benchmark::State& state) {
 	const std::string s = std::to_string(state.range(0));
 	for (auto _ : state) {
 		const bool r = s == std::string("1") ||
@@ -47,7 +47,32 @@ static void plain_3strings(benchmark::State& state) {
 		benchmark::DoNotOptimize(r);
 	}
 }
-BENCHMARK(plain_3strings)->Arg(0);
+BENCHMARK(plain_3strings_small)->Arg(0);
+
+/* 3 big strings test */
+
+static void anyof_3strings_big(benchmark::State& state) {
+	const std::string s = std::to_string(state.range(0));
+	for (auto _ : state) {
+		const bool r = s == srp::any_of(
+			std::string("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			std::string("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"),
+			std::string("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"));
+		benchmark::DoNotOptimize(r);
+	}
+}
+BENCHMARK(anyof_3strings_big)->Arg(0);
+
+static void plain_3strings_big(benchmark::State& state) {
+	const std::string s = std::to_string(state.range(0));
+	for (auto _ : state) {
+		const bool r = s == std::string("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") ||
+			s == std::string("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy") ||
+			s == std::string("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+		benchmark::DoNotOptimize(r);
+	}
+}
+BENCHMARK(plain_3strings_big)->Arg(0);
 
 /* main */
 
