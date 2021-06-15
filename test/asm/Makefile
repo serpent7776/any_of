@@ -5,7 +5,7 @@ ASMFLAGS=-S -masm=intel
 DIFFFLAGS=-u --ignore-matching-lines '\s*\.file\s*' --ignore-matching-lines '^\.L[a-zA-Z_0-9]*:'
 
 .PHONY: all
-all: diff_4int diff_1string diff_3strings
+all: diff_4int diff_1string diff_3strings_small diff_3strings_big
 
 .PHONY: clean
 clean:
