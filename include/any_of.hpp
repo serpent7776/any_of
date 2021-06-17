@@ -24,7 +24,7 @@ struct Values<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 	template <typename T>
 	friend bool __attribute__((always_inline)) operator==(const Values& values, const T& value)
 	{
-		return ((value == values.Value<Idxs, T>::value) || ...);
+		return ((value == values.Value<Idxs, Ts>::value) || ...);
 	}
 
 	template <typename T>
