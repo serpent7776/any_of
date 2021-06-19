@@ -16,28 +16,28 @@ struct Value
 };
 
 template <class Idxs, class ...Ts>
-struct Values;
+struct Pack;
 
 template <std::size_t ...Idxs, typename ...Ts>
-struct Values<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
+struct Pack<std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 {
 	template <typename T>
-	friend bool __attribute__((always_inline)) operator==(const Values& values, const T& value)
+	friend bool __attribute__((always_inline)) operator==(const Pack& pack, const T& value)
 	{
-		return ((value == values.Value<Idxs, Ts>::value) || ...);
+		return ((value == pack.Value<Idxs, Ts>::value) || ...);
 	}
 
 	template <typename T>
-	friend bool __attribute__((always_inline)) operator==(const T& value, const Values& values)
+	friend bool __attribute__((always_inline)) operator==(const T& value, const Pack& pack)
 	{
-		return values == value;
+		return pack == value;
 	}
 };
 
 template <typename ...Ts>
 auto any_of(const Ts&... vals)
 {
-	return Values<std::index_sequence_for<Ts...>, Ts...> {{vals}...};
+	return Pack<std::index_sequence_for<Ts...>, Ts...> {{vals}...};
 }
 
 }
