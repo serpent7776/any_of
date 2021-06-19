@@ -74,6 +74,29 @@ static void plain_3strings_big(benchmark::State& state) {
 }
 BENCHMARK(plain_3strings_big)->Arg(0);
 
+/* find_if test */
+
+static void anyof_find_if(benchmark::State& state) {
+	const auto vec = std::vector {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	for (auto _ : state) {
+		const bool r = std::find(std::begin(vec), std::end(vec), srp::any_of(7, 8)) != std::end(vec);
+		benchmark::DoNotOptimize(r);
+	}
+}
+BENCHMARK(anyof_find_if)->Arg(0);
+
+static void plain_find_if(benchmark::State& state) {
+	const auto vec = std::vector {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	for (auto _ : state) {
+		const bool r = std::find_if(std::begin(vec), std::end(vec), [](int v)
+		{
+			return v == 7 || v == 8;
+		}) != std::end(vec);
+		benchmark::DoNotOptimize(r);
+	}
+}
+BENCHMARK(plain_find_if)->Arg(0);
+
 /* main */
 
 BENCHMARK_MAIN();
