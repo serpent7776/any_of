@@ -19,6 +19,15 @@ struct logical_or
 	}
 };
 
+struct logical_and
+{
+	template<typename ...Ts>
+	auto operator()(const Ts&... args) const
+	{
+		return (args && ...);
+	}
+};
+
 template <std::size_t, typename T>
 struct Value
 {
@@ -50,6 +59,12 @@ template <typename ...Ts>
 auto any_of(const Ts&... vals)
 {
 	return Pack<logical_or, std::equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
+}
+
+template <typename ...Ts>
+auto none_of(const Ts&... vals)
+{
+	return Pack<logical_and, std::not_equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
 }
 
 }
