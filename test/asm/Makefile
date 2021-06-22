@@ -24,3 +24,5 @@ view_%: plain_%.s anyof_%.s
 
 deps:
 	mkdep ${CXXFLAGS} *.cpp
+
+-include .depend

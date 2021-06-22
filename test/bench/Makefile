@@ -5,7 +5,7 @@ run_bench: bench
 	./simple_bench
 
 bench: simple_bench.o
-	${CXX} -o simple_bench simple_bench.o ${LDFLAGS}
+	${CXX} -o simple_bench $^ ${LDFLAGS}
 
 .PHONY: clean
 clean:
@@ -13,3 +13,5 @@ clean:
 
 deps:
 	mkdep ${CXXFLAGS} *.cpp
+
+-include .depend

@@ -12,3 +12,5 @@ run_tests: test
 
 deps:
 	mkdep ${CXXFLAGS} *.cpp
+
+-include .depend
