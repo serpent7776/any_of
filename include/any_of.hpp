@@ -25,16 +25,16 @@ struct Value
 	const T& value;
 };
 
-template <class ReduceOp, class EqOp, class Idxs, class ...Ts>
+template <class ReduceOp, class CmpOp, class Idxs, class ...Ts>
 struct Pack;
 
-template <class ReduceOp, class EqOp, std::size_t ...Idxs, typename ...Ts>
-struct Pack<ReduceOp, EqOp, std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
+template <class ReduceOp, class CmpOp, std::size_t ...Idxs, typename ...Ts>
+struct Pack<ReduceOp, CmpOp, std::index_sequence<Idxs...>, Ts...> : Value<Idxs, Ts>...
 {
 	template <typename T>
 	friend bool __attribute__((always_inline)) operator==(const Pack& pack, const T& value)
 	{
-		const auto eq = EqOp();
+		const auto eq = CmpOp();
 		const auto reduce = ReduceOp();
 		return reduce(eq(value, pack.Value<Idxs, Ts>::value)...);
 	}
