@@ -38,14 +38,3 @@ TEST_CASE("any_of with std::remove")
  * }
  */
 
-/*
- * // This doesn't work either, because std::equal_range uses std::less, which also forces its lhs and rhs to be of the same type.
- * TEST_CASE("any_of with std::equal_range")
- * {
- *         const auto vec = std::vector {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
- *         const auto [f, l] = std::equal_range(std::begin(vec), std::end(vec), srp::any_of(7, 8));
- *         REQUIRE(*f == 7);
- *         REQUIRE(*l == 8);
- * }
- */
-
