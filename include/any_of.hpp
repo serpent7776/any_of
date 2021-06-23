@@ -28,6 +28,15 @@ struct logical_and
 	}
 };
 
+struct only_one
+{
+	template<typename ...Ts>
+	auto operator()(const Ts&... args) const
+	{
+		return ((bool)args + ...) == 1;
+	}
+};
+
 template <std::size_t, typename T>
 struct Value
 {
@@ -71,6 +80,12 @@ template <typename ...Ts>
 auto all_of(const Ts&... vals)
 {
 	return Pack<logical_and, std::equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
+}
+
+template <typename ...Ts>
+auto one_of(const Ts&... vals)
+{
+	return Pack<only_one, std::equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
 }
 
 }
