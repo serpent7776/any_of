@@ -67,4 +67,10 @@ auto none_of(const Ts&... vals)
 	return Pack<logical_and, std::not_equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
 }
 
+template <typename ...Ts>
+auto all_of(const Ts&... vals)
+{
+	return Pack<logical_and, std::equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
+}
+
 }
