@@ -64,28 +64,34 @@ struct Pack<ReduceOp, EqOp, std::index_sequence<Idxs...>, Ts...> : Value<Idxs, T
 	}
 };
 
+template <typename ReduceOp, typename EqOp, typename ...Ts>
+auto make_pack(const Ts&... values)
+{
+	return Pack<ReduceOp, EqOp, std::index_sequence_for<Ts...>, Ts...> {{values}...};
+}
+
 template <typename ...Ts>
 auto any_of(const Ts&... vals)
 {
-	return Pack<logical_or, std::equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
+	return make_pack<logical_or, std::equal_to<void>>(vals...);
 }
 
 template <typename ...Ts>
 auto none_of(const Ts&... vals)
 {
-	return Pack<logical_and, std::not_equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
+	return make_pack<logical_and, std::not_equal_to<void>>(vals...);
 }
 
 template <typename ...Ts>
 auto all_of(const Ts&... vals)
 {
-	return Pack<logical_and, std::equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
+	return make_pack<logical_and, std::equal_to<void>> (vals...);
 }
 
 template <typename ...Ts>
 auto one_of(const Ts&... vals)
 {
-	return Pack<only_one, std::equal_to<void>, std::index_sequence_for<Ts...>, Ts...> {{vals}...};
+	return make_pack<only_one, std::equal_to<void>>(vals...);
 }
 
 }
