@@ -103,6 +103,15 @@ auto make_pack(const Ts&... values)
 	return Pack<OpList<Ops...>, std::index_sequence_for<Ts...>, Ts...> {{}, {values}...};
 }
 
+template <typename ...Ops>
+auto make_custom_of()
+{
+	return [](const auto& ...args)
+	{
+		return make_pack<Ops...>(args...);
+	};
+}
+
 template <typename ...Ts>
 auto any_of(const Ts&... vals)
 {
