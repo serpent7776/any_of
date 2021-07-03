@@ -64,6 +64,27 @@ struct EqOp
 	}
 };
 
+template <class Reducer, class Neq>
+struct NeqOp
+{
+	[[no_unique_address]] Reducer reducer;
+	[[no_unique_address]] Neq neq;
+
+	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
+	friend bool __attribute__((always_inline)) operator!=(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
+	{
+		const Reducer& reducer = pack.NeqOp<Reducer, Neq>::reducer;
+		const Neq& neq = pack.NeqOp<Reducer, Neq>::neq;
+		return reducer(neq(value, pack.Value<Idxs, Ts>::value)...);
+	}
+
+	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
+	friend bool __attribute__((always_inline)) operator!=(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
+	{
+		return pack != value;
+	}
+};
+
 template <typename ...Ops>
 struct OpList : Ops... {};
 
