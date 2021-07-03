@@ -28,12 +28,13 @@ struct logical_and
 	}
 };
 
-struct only_one
+template <typename Type, Type Sum>
+struct sum_is
 {
 	template<typename ...Ts>
 	auto operator()(const Ts&... args) const
 	{
-		return ((bool)args + ...) == 1;
+		return (args + ...) == Sum;
 	}
 };
 
@@ -123,7 +124,7 @@ auto all_of(const Ts&... vals)
 template <typename ...Ts>
 auto one_of(const Ts&... vals)
 {
-	return make_pack<EqOp<only_one, std::equal_to<void>>>(vals...);
+	return make_pack<EqOp<sum_is<int, 1>, std::equal_to<void>>>(vals...);
 }
 
 }
