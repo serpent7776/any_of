@@ -1,6 +1,10 @@
 #ifndef SRP_ANY_OF_HPP
 #define SRP_ANY_OF_HPP
 
+#ifndef SRP_ATTR_FORCE_INLINE
+#define SRP_ATTR_FORCE_INLINE __attribute__((always_inline))
+#endif
+
 #include <utility>
 #include <functional>
 
@@ -54,7 +58,7 @@ struct EqOp
 	[[no_unique_address]] Eq eq;
 
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
-	friend bool __attribute__((always_inline)) operator==(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
+	friend bool SRP_ATTR_FORCE_INLINE operator==(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
 	{
 		const Reducer& reducer = pack.EqOp<Reducer, Eq>::reducer;
 		const Eq& eq = pack.EqOp<Reducer, Eq>::eq;
@@ -62,7 +66,7 @@ struct EqOp
 	}
 
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
-	friend bool __attribute__((always_inline)) operator==(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
+	friend bool SRP_ATTR_FORCE_INLINE operator==(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
 	{
 		return pack == value;
 	}
@@ -75,7 +79,7 @@ struct NeqOp
 	[[no_unique_address]] Neq neq;
 
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
-	friend bool __attribute__((always_inline)) operator!=(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
+	friend bool SRP_ATTR_FORCE_INLINE operator!=(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
 	{
 		const Reducer& reducer = pack.NeqOp<Reducer, Neq>::reducer;
 		const Neq& neq = pack.NeqOp<Reducer, Neq>::neq;
@@ -83,7 +87,7 @@ struct NeqOp
 	}
 
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
-	friend bool __attribute__((always_inline)) operator!=(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
+	friend bool SRP_ATTR_FORCE_INLINE operator!=(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
 	{
 		return pack != value;
 	}
