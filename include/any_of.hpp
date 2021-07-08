@@ -1,3 +1,6 @@
+#ifndef SRP_ANY_OF_HPP
+#define SRP_ANY_OF_HPP
+
 #include <utility>
 #include <functional>
 
@@ -137,3 +140,5 @@ auto one_of(const Ts&... vals)
 }
 
 }
+
+#endif
