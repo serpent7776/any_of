@@ -51,45 +51,55 @@ struct Value
 	const T& value;
 };
 
-template <class Reducer, class Eq>
-struct EqOp
+template <class Reducer, class Cmp>
+struct Op
 {
 	[[no_unique_address]] Reducer reducer;
-	[[no_unique_address]] Eq eq;
+	[[no_unique_address]] Cmp cmp;
 
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
-	friend bool SRP_ATTR_FORCE_INLINE operator==(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
+	auto SRP_ATTR_FORCE_INLINE eval(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value) const
 	{
-		const Reducer& reducer = pack.EqOp<Reducer, Eq>::reducer;
-		const Eq& eq = pack.EqOp<Reducer, Eq>::eq;
+		const Reducer& reducer = Op::reducer;
+		const Cmp& eq = Op::cmp;
 		return reducer(eq(value, pack.Value<Idxs, Ts>::value)...);
 	}
 
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
-	friend bool SRP_ATTR_FORCE_INLINE operator==(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
+	auto SRP_ATTR_FORCE_INLINE eval(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack) const
 	{
-		return pack == value;
+		return eval(pack, value);
+	}
+};
+
+template <typename Op, template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
+auto SRP_ATTR_FORCE_INLINE eval(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
+{
+	return static_cast<const Op&>(pack).eval(pack, value);
+}
+template <typename Op, template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
+auto SRP_ATTR_FORCE_INLINE eval(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
+{
+	return static_cast<const Op&>(pack).eval(pack, value);
+}
+
+template <class Reducer, class Eq>
+struct EqOp : Op<Reducer, Eq>
+{
+	template <typename PackOrValueA, typename PackOrValueB>
+	friend bool SRP_ATTR_FORCE_INLINE operator==(const PackOrValueA& x, const PackOrValueB& y)
+	{
+		return eval<Op<Reducer, Eq>>(x, y);
 	}
 };
 
 template <class Reducer, class Neq>
-struct NeqOp
+struct NeqOp : Op<Reducer, Neq>
 {
-	[[no_unique_address]] Reducer reducer;
-	[[no_unique_address]] Neq neq;
-
-	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
-	friend bool SRP_ATTR_FORCE_INLINE operator!=(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
+	template <typename PackOrValueA, typename PackOrValueB>
+	friend bool SRP_ATTR_FORCE_INLINE operator!=(const PackOrValueA& x, const PackOrValueB& y)
 	{
-		const Reducer& reducer = pack.NeqOp<Reducer, Neq>::reducer;
-		const Neq& neq = pack.NeqOp<Reducer, Neq>::neq;
-		return reducer(neq(value, pack.Value<Idxs, Ts>::value)...);
-	}
-
-	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
-	friend bool SRP_ATTR_FORCE_INLINE operator!=(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
-	{
-		return pack != value;
+		return eval<Op<Reducer, Neq>>(x, y);
 	}
 };
 
