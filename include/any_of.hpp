@@ -60,8 +60,6 @@ struct Op
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
 	auto SRP_ATTR_FORCE_INLINE eval(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value) const
 	{
-		const Reducer& reduce = Op::reduce;
-		const Mapper& map = Op::map;
 		return reduce(map(value, pack.Value<Idxs, Ts>::value)...);
 	}
 
