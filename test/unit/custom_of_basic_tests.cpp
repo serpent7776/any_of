@@ -17,14 +17,6 @@ TEST_CASE("custom any_of with operators == and !=")
 
 namespace
 {
-	struct Xor
-	{
-		int operator()(int a, int b) const
-		{
-			return a ^ b;
-		}
-	};
-
 	struct Concat
 	{
 		template <typename ...Vals>
@@ -35,12 +27,12 @@ namespace
 		}
 	};
 
-	struct XorOp : srp::Op<Concat, Xor>
+	struct XorOp : srp::Op<Concat, std::bit_xor<void>>
 	{
 		template <typename Pack>
 		friend std::array<int, Pack::size> operator^(const Pack& pack, int val)
 		{
-			return srp::eval<srp::Op<Concat, Xor>>(pack, val);
+			return srp::eval<srp::Op<Concat, std::bit_xor<void>>>(pack, val);
 		}
 	};
 }
