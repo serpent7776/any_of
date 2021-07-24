@@ -125,15 +125,15 @@ struct Pack<OpList<Ops...>, std::index_sequence<Idxs...>, Ts...> : OpList<Ops...
 };
 
 template <typename ...Ops, typename ...Ts>
-auto make_pack(const Ts&... values)
+constexpr auto make_pack(const Ts&... values)
 {
 	return Pack<OpList<Ops...>, std::index_sequence_for<Ts...>, Ts...> {{}, {values}...};
 }
 
 template <typename ...Ops>
-auto make_custom_of()
+constexpr auto make_custom_of()
 {
-	return [](const auto& ...args)
+	return [](const auto& ...args) constexpr
 	{
 		return make_pack<Ops...>(args...);
 	};
