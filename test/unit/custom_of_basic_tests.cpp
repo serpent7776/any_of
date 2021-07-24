@@ -32,7 +32,7 @@ namespace
 		template <typename Pack>
 		friend std::array<int, Pack::size> operator^(const Pack& pack, int val)
 		{
-			return srp::eval<srp::Op<Concat, std::bit_xor<void>>>(pack, val);
+			return srp::eval<XorOp>(pack, val);
 		}
 	};
 }
@@ -52,7 +52,7 @@ namespace
 		template <typename Pack>
 		friend std::array<bool, Pack::size> operator!(const Pack& pack)
 		{
-			return srp::eval<srp::Op<Concat, std::logical_not<void>>>(pack);
+			return srp::eval<NegOp>(pack);
 		}
 	};
 }
