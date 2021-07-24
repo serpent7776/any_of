@@ -51,18 +51,18 @@ struct Value
 	const T& value;
 };
 
-template <class Reducer, class Cmp>
+template <class Reducer, class Mapper>
 struct Op
 {
-	[[no_unique_address]] Reducer reducer;
-	[[no_unique_address]] Cmp cmp;
+	[[no_unique_address]] Reducer reduce;
+	[[no_unique_address]] Mapper map;
 
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
 	auto SRP_ATTR_FORCE_INLINE eval(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value) const
 	{
-		const Reducer& reducer = Op::reducer;
-		const Cmp& eq = Op::cmp;
-		return reducer(eq(value, pack.Value<Idxs, Ts>::value)...);
+		const Reducer& reduce = Op::reduce;
+		const Mapper& map = Op::map;
+		return reduce(map(value, pack.Value<Idxs, Ts>::value)...);
 	}
 
 	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
