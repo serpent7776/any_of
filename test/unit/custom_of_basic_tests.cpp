@@ -27,10 +27,11 @@ namespace
 
 	struct Concat
 	{
-		template <typename ...Ints>
-		std::array<int, sizeof...(Ints)> operator()(Ints... ints) const
+		template <typename ...Vals>
+		auto operator()(Vals... vals) const
 		{
-			return std::array<int, sizeof...(Ints)> {ints...};
+			using T = typename std::common_type<Vals...>::type;
+			return std::array<T, sizeof...(Vals)> {vals...};
 		}
 	};
 
@@ -50,4 +51,23 @@ TEST_CASE("custom_of with custom operator ^")
 
 	REQUIRE((xor_of(0, 1, 2, 3) ^ 1) == std::array {1, 0, 3, 2});
 	REQUIRE((xor_of(0, 1, 2, 3, 4, 5) ^ 1) == std::array {1, 0, 3, 2, 5, 4});
+}
+
+namespace
+{
+	struct NegOp : srp::Op<Concat, std::logical_not<void>>
+	{
+		template <typename Pack>
+		friend std::array<bool, Pack::size> operator!(const Pack& pack)
+		{
+			return srp::eval<srp::Op<Concat, std::logical_not<void>>>(pack);
+		}
+	};
+}
+
+TEST_CASE("custom_of with custom unary operator !")
+{
+	auto neg_of = srp::make_custom_of<NegOp>();
+
+	REQUIRE(!neg_of(true, false) == std::array {false, true});
 }
