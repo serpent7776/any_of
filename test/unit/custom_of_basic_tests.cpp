@@ -37,7 +37,7 @@ namespace
 	struct XorOp : srp::Op<Concat, Xor>
 	{
 		template <typename Pack>
-		friend std::array<int, Pack::size()> operator^(const Pack& pack, int val)
+		friend std::array<int, Pack::size> operator^(const Pack& pack, int val)
 		{
 			return srp::eval<srp::Op<Concat, Xor>>(pack, val);
 		}

@@ -110,10 +110,7 @@ struct Pack;
 template <typename ...Ops, std::size_t ...Idxs, typename ...Ts>
 struct Pack<OpList<Ops...>, std::index_sequence<Idxs...>, Ts...> : OpList<Ops...>, Value<Idxs, Ts>...
 {
-	constexpr static std::size_t size()
-	{
-		return sizeof...(Ts);
-	}
+	constexpr static std::size_t size = sizeof...(Ts);
 };
 
 template <typename ...Ops, typename ...Ts>
