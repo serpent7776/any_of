@@ -1,4 +1,5 @@
 #include <array>
+#include <functional>
 #include <type_traits>
 
 #include <catch2/catch.hpp>
@@ -62,4 +63,52 @@ TEST_CASE("custom_of with custom unary operator !")
 	auto neg_of = srp::make_custom_of<NegOp>();
 
 	REQUIRE(!neg_of(true, false) == std::array {false, true});
+}
+
+namespace
+{
+	template <typename T>
+	struct identity
+	{
+		const T& operator()(const T& value) const { return value; }
+	};
+
+	template <typename ...Ops>
+	struct Packer
+	{
+		constexpr static auto pack = srp::make_custom_of<Ops...>();
+
+		template <typename ...Ts>
+		auto operator()(const Ts&... values) const
+		{
+			return pack(values..., values...);
+		}
+	};
+
+	struct ArrayOp : srp::Op<Concat, identity<int>>
+	{
+		template <typename Pack>
+		friend auto to_array(const Pack& pack)
+		{
+			return srp::eval<ArrayOp>(pack);
+		}
+	};
+
+	struct DoubleOp : srp::Op<Packer<DoubleOp, ArrayOp>, identity<int>>
+	{
+		template <typename Pack>
+		friend auto operator!(const Pack& pack)
+		{
+			return srp::eval<DoubleOp>(pack);
+		}
+	};
+}
+
+TEST_CASE("custom_of with chained operator")
+{
+	auto double_of = srp::make_custom_of<DoubleOp, ArrayOp>();
+
+	REQUIRE(to_array(!double_of(1, 2, 3)) == std::array {1, 2, 3,  1, 2, 3});
+	REQUIRE(to_array(!!double_of(1, 2, 3)) == std::array {1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3});
+	REQUIRE(to_array(!!!double_of(1, 2, 3)) == std::array {1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3});
 }
