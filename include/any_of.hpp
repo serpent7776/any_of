@@ -57,36 +57,36 @@ struct Op
 	[[no_unique_address]] Reducer reduce;
 	[[no_unique_address]] Mapper map;
 
-	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
+	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, std::size_t ...Idxs, typename ...Ts>
 	auto SRP_ATTR_FORCE_INLINE eval(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value) const
 	{
 		return reduce(map(value, pack.Value<Idxs, Ts>::value)...);
 	}
 
-	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
+	template <template <typename, typename, typename...> class Pack, typename Ops, typename T, std::size_t ...Idxs, typename ...Ts>
 	auto SRP_ATTR_FORCE_INLINE eval(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack) const
 	{
 		return eval(pack, value);
 	}
 
-	template <template <typename, typename, typename...> class Pack, typename Ops, size_t ...Idxs, typename ...Ts>
+	template <template <typename, typename, typename...> class Pack, typename Ops, std::size_t ...Idxs, typename ...Ts>
 	auto SRP_ATTR_FORCE_INLINE eval(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack) const
 	{
 		return reduce(map(pack.Value<Idxs, Ts>::value)...);
 	}
 };
 
-template <typename Op, template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
+template <typename Op, template <typename, typename, typename...> class Pack, typename Ops, typename T, std::size_t ...Idxs, typename ...Ts>
 auto SRP_ATTR_FORCE_INLINE eval(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const T& value)
 {
 	return static_cast<const Op&>(pack).eval(pack, value);
 }
-template <typename Op, template <typename, typename, typename...> class Pack, typename Ops, typename T, size_t ...Idxs, typename ...Ts>
+template <typename Op, template <typename, typename, typename...> class Pack, typename Ops, typename T, std::size_t ...Idxs, typename ...Ts>
 auto SRP_ATTR_FORCE_INLINE eval(const T& value, const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
 {
 	return static_cast<const Op&>(pack).eval(pack, value);
 }
-template <typename Op, template <typename, typename, typename...> class Pack, typename Ops, size_t ...Idxs, typename ...Ts>
+template <typename Op, template <typename, typename, typename...> class Pack, typename Ops, std::size_t ...Idxs, typename ...Ts>
 auto SRP_ATTR_FORCE_INLINE eval(const Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
 {
 	return static_cast<const Op&>(pack).eval(pack);
