@@ -156,3 +156,88 @@ TEST_CASE("custom_of reversing")
 
 	REQUIRE(to_array(!reverse_of(1, 2, 3, 4, 5)) == std::array {5, 4, 3, 2, 1});
 }
+
+namespace
+{
+	template <typename ValueType>
+	struct Field
+	{
+		const char* name;
+		ValueType value;
+	};
+
+	std::string to_string(char c)
+	{
+		return std::string(1, c);
+	}
+	std::string to_string(const char* s)
+	{
+		return std::string(s);
+	}
+	std::string quote(const std::string& s)
+	{
+		return '"' + s + '"';
+	}
+
+	template <typename T>
+	struct always_false
+	{
+		static constexpr bool value = false;
+	};
+
+	template <typename T>
+	constexpr bool always_fail() {static_assert(always_false<T>::value); return false;}
+
+	template <typename T> constexpr bool needs_quoting = always_fail<T>();
+	template <> constexpr bool needs_quoting<int> = false;
+	template <> constexpr bool needs_quoting<char> = true;
+
+	template <typename T>
+	std::string to_quoted_string(const T& value)
+	{
+		using std::to_string;
+		using ::to_string;
+		const std::string s = to_string(value);
+		if constexpr (needs_quoting<T>)
+		{
+			return quote(s);
+		}
+		return s;
+	}
+
+	struct Stringify
+	{
+		template<typename T>
+		std::string operator()(const Field<T>& field) const
+		{
+			using std::to_string;
+			using ::to_string;
+			return quote(to_string(field.name)) + '=' + to_quoted_string(field.value);
+		}
+	};
+
+	struct StrJoin
+	{
+		template<typename String, typename ...Strings>
+		std::string operator()(const String& string, const Strings&... strings) const
+		{
+			return '{' + string + ((", " + strings) + ...) + '}';
+		}
+	};
+
+	struct JsonOp : srp::Op<StrJoin, Stringify>
+	{
+		template <typename Ops, std::size_t ...Idxs, typename ...Ts>
+		friend auto operator+(const srp::Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
+		{
+			return srp::eval<JsonOp>(pack);
+		}
+	};
+}
+
+TEST_CASE("custom_of generating JSON")
+{
+	auto json_of = srp::make_custom_of<JsonOp>();
+
+	REQUIRE(+json_of(Field<int>{"x", 12}, Field<char>{"y", 'a'}) == std::string {R"({"x"=12, "y"="a"})"});
+}
