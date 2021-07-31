@@ -112,3 +112,47 @@ TEST_CASE("custom_of with chained operator")
 	REQUIRE(to_array(!!double_of(1, 2, 3)) == std::array {1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3});
 	REQUIRE(to_array(!!!double_of(1, 2, 3)) == std::array {1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3,  1, 2, 3});
 }
+
+namespace
+{
+	template <typename NewOps, typename Ops, size_t ...Idxs, typename ...Ts>
+	auto repack(const srp::Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
+	{
+		return srp::make_pack<NewOps>(pack.template Value<Idxs, Ts>::value...);
+	}
+
+	struct Reverser
+	{
+		template <typename Ops, size_t... Idxs, typename ...Ts>
+		auto reverse(const srp::Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack) const
+		{
+			return pack;
+		}
+		template <typename Ops, typename X, typename ...Xs, size_t ...Idxs, typename ...Ts>
+		auto reverse(const srp::Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack, const X& value, const Xs&... values) const
+		{
+			return reverse(srp::make_pack(value, pack.template Value<Idxs, Ts>::value...), values...);
+		}
+		template <typename T, typename ...Ts>
+		auto operator()(const T& value, const Ts&... values) const
+		{
+			return reverse(srp::make_pack(value), values...);
+		}
+	};
+
+	struct ReverseOp : srp::Op<Reverser, identity<int>>
+	{
+		template <typename Ops, std::size_t ...Idxs, typename ...Ts>
+		friend auto operator!(const srp::Pack<Ops, std::index_sequence<Idxs...>, Ts...>& pack)
+		{
+			return repack<Ops>(srp::eval<ReverseOp>(pack));
+		}
+	};
+}
+
+TEST_CASE("custom_of reversing")
+{
+	auto reverse_of = srp::make_custom_of<ReverseOp, ArrayOp>();
+
+	REQUIRE(to_array(!reverse_of(1, 2, 3, 4, 5)) == std::array {5, 4, 3, 2, 1});
+}
